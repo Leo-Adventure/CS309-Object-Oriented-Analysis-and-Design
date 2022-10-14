@@ -7,6 +7,7 @@
                 <el-table :data="tableData"
                     :header-cell-style="{color:'black',fontSize: '14px',fontFamily: 'nano',background:'lightgrey'}"
                     border stripe fit style="width: 100%" empty-text="No Course opening">
+
                     <el-table-column prop="course_name" label="Course Name" width="180" align="center">
                     </el-table-column>
                     <el-table-column prop="course_code" label="Course Code" width="180" align="center">
@@ -24,13 +25,17 @@
                     <el-table-column prop="duration" label="Duration" width="120" align="center">
                     </el-table-column>
                     <el-table-column prop="operation" label="Operation" align="center">
-                        <div>
-                            <el-button type="primary" size="mini" plain round @click="editClass">edit</el-button>
-                        </div>
+                        <template #default="scope">
+                            <div>
+                                <el-button type="primary" size="mini" plain round @click="handleEdit(scope.$index)">edit
+                                </el-button>
+                            </div>
 
-                        <div>
-                            <el-button type="danger" size="mini" plain round @click="deleteClass">delete</el-button>
-                        </div>
+                            <div>
+                                <el-button type="danger" size="mini" plain round @click="deleteClass(scope.$index)">
+                                    delete</el-button>
+                            </div>
+                        </template>
 
                     </el-table-column>
                 </el-table>
@@ -40,7 +45,7 @@
                     <el-button type="primary" @click="addClass">Add Class</el-button>
                 </div>
 
-                <el-dialog :visible.sync="dialogFormVisible">
+                <el-dialog :visible.async="dialogFormVisible">
                     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                         <el-form-item>
                             <div class="form_header">
@@ -50,7 +55,7 @@
                         <el-form-item label="Course Name" prop="course_name">
                             <el-input v-model="form.course_name"></el-input>
                         </el-form-item>
-                        <el-form-item label="Couse Code" prop="course_code">
+                        <el-form-item label="Course Code" prop="course_code">
                             <el-input v-model="form.course_code"></el-input>
                         </el-form-item>
                         <el-form-item label="Language" prop="language">
@@ -63,17 +68,19 @@
                         <el-form-item label="Teacher" prop="teacher">
                             <el-input v-model="form.teacher"></el-input>
                         </el-form-item>
-                        <el-form-item label="Date" prop="date">
-                            <el-col :span="11">
-                                <el-date-picker type="date" placeholder="2022/10/12" format="yyyy/MM/dd"
-                                    :picker-options="pickerOptions" v-model="form.date" style="width: 100%;">
-                                </el-date-picker>
-                            </el-col>
+                        <el-form-item label="Date" prop="date" required>
+                            <el-row>
+                                <el-col :span="11">
+                                    <el-date-picker type="date" placeholder="2022/10/14" v-model="form.date"
+                                        style="width: 100%;">
+                                    </el-date-picker>
+                                </el-col>
+                            </el-row>
 
                         </el-form-item>
                         <el-form-item label="Time" prop="time">
                             <el-col :span="11">
-                                <el-time-picker placeholder="--:--" v-model="form.time"  style="width: 100%;">
+                                <el-time-picker placeholder="--:--" v-model="form.time" style="width: 100%;">
                                 </el-time-picker>
                             </el-col>
                         </el-form-item>
@@ -89,7 +96,7 @@
                             </el-col>
                         </el-form-item>
 
-                        <el-form-item label="Duration" prop="duration">
+                        <el-form-item label="Duration(H)" prop="duration">
                             <el-input v-model="form.duration"></el-input>
                         </el-form-item>
                         <el-form-item>
@@ -103,12 +110,80 @@
                     </el-form>
                 </el-dialog>
 
+
+                <el-dialog :visible.async="dialogFormVisible2">
+                    <el-form ref="form2" :model="form2" :rules="rules" label-width="100px">
+                        <el-form-item>
+                            <div class="form_header">
+                                <h1><b>Edit Course</b></h1>
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="Course Name" prop="course_name">
+                            <el-input v-model="form2.course_name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="Course Code" prop="course_code">
+                            <el-input v-model="form2.course_code"></el-input>
+                        </el-form-item>
+                        <el-form-item label="Language" prop="language">
+                            <el-radio-group v-model="form2.language">
+                                <el-radio label="Chinese"></el-radio>
+                                <el-radio label="English"></el-radio>
+                                <el-radio label="Bilingual"></el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="Teacher" prop="teacher">
+                            <el-input v-model="form2.teacher"></el-input>
+                        </el-form-item>
+                        <el-form-item label="Date" prop="date">
+                            <el-col :span="11">
+                                <el-date-picker type="date" placeholder="2022/10/14" v-model="form2.date"
+                                    style="width: 100%;">
+                                </el-date-picker>
+                            </el-col>
+
+                        </el-form-item>
+                        <el-form-item label="Time" prop="time">
+                            <el-col :span="11">
+                                <el-time-picker placeholder="--:--" v-model="form2.time" style="width: 100%;">
+                                </el-time-picker>
+                            </el-col>
+                        </el-form-item>
+
+                        <el-form-item label="Location" prop="location">
+                            <el-col :span="20">
+                                <el-select v-model=form.location filterable
+                                    placeholder="Teaching Building NO.1 Lecture Hall">
+                                    <el-option v-for="item in options" :key="item.value" :label="item.label"
+                                        :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-form-item>
+
+                        <el-form-item label="Duration(H)" prop="duration">
+                            <el-input v-model="form2.duration"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <div class="button_div">
+                                <el-button type="primary" size="small" @click="editForm('form2')">Edit</el-button>
+                                <el-button size="small" class="normal_button" @click="resetForm2('form2')">Cancel
+                                </el-button>
+                            </div>
+                        </el-form-item>
+
+                    </el-form>
+                </el-dialog>
+
             </div>
         </el-container>
     </div>
 </template>
 <meta charset=​"UTF-8">​
 <script>
+import moment from 'moment'
+
+
+
 
 export default {
     data() {
@@ -117,7 +192,7 @@ export default {
             if (value === '') {
                 callback(new Error('Please enter duration'));
             } else {
-                let isNumber = /^[0-9]+$/.test(value)
+                let isNumber = /^[0-9.]+$/.test(value)
                 if (!isNumber) {
                     callback(new Error('Duration must be a number'));
                 }
@@ -147,25 +222,118 @@ export default {
                 if (!isEN) {
                     callback(new Error('Course Code should be a combination of letters and numbers'));
                 } else {
-                    callback();
+                    var step = 0;
+                    var flag = false;
+                    for (; step < this.tableData.length; step++) {
+                        if (this.tableData[step].course_name == this.form.course_name && value != this.tableData[step].course_code) {
+
+                            flag = true;
+                            break;
+                        }
+                    }
+
+                    if (flag == true) {
+                        callback(new Error("Different courses should have different course codes"))
+                    } else {
+                        callback()
+                    }
                 }
             }
         };
+        // var validateLocation = (rule, value, callback) => {
+        //     if (!value) {
+        //         return callback(new Error('Please input non-blank value'))
+        //     }
+        //     setTimeout(() => {
+        //         var step = 0;
+        //         var flag = false;
+        //         for (; step < this.tableData.length; step++) {
+        //             if (this.dialogFormVisible2 == true && this.form2.index == step) {
+        //                 continue
+        //             }
+        //             if (this.tableData[step].location == value) {
+        //                 const start_time_1 = new Date(this.tableData[step].date + " " + this.tableData[step].time)
+        //                 const end_time_1 = new Date()
+        //                 end_time_1.setTime(start_time_1.getTime() + 3600 * 1000 * parseFloat(this.tableData[step].duration.substring(0, this.tableData[step].duration.length - 1)))
+        //                 var start_time_2;
+        //                 var end_time_2 = new Date();
+        //                 if (this.dialogFormVisible == true) {
+        //                     start_time_2 = new Date(this.form2.date + " " + this.form2.time)
+        //                     end_time_2.setTime(start_time_2.getTime() + 3600 * 1000 * parseFloat(this.form.duration))
+        //                 } else if (this.dialogFormVisible2 == true) {
+        //                     start_time_2 = new Date(this.form2.date + " " + this.form2.time)
+        //                     end_time_2.setTime(start_time_2.getTime() + 3600 * 1000 * parseFloat(this.form2.duration))
+        //                 }
+        //                 if (start_time_1 <= start_time_2 && start_time_2 <= end_time_1) {
+        //                     flag = true;
+        //                     break;
+        //                 } else if (start_time_1 >= start_time_2 && start_time_1 <= end_time_2) {
+        //                     flag = true;
+        //                     break;
+        //                 }
+        //             }
+        //         }
+        //         if (flag == true) {
+        //             callback(new Error("Any two different courses cannot share one room at the same time"))
+        //         } else {
+        //             callback()
+        //         }
+        //     }, 500)
+        // }
+        var validateDate = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('Please input non-blank date'))
+            }
+
+            const adate = new Date();
+            const return_date = new Date(value);
+            var flag = true;
+            if (return_date <= adate) {
+                callback(new Error('Please enter a date after the current date'))
+            }
+            var current_CourseCode;
+            var current_Date;
+            var current_Teacher;
+            if (this.dialogFormVisible == true) {
+                current_CourseCode = this.form.course_code
+                current_Date = this.format_date(this.form.date)
+                current_Teacher = this.form.teacher
+            } else if (this.dialogFormVisible2 == true) {
+                current_CourseCode = this.form2.course_code
+                current_Date = this.format_date(this.form2.date)
+                current_Teacher = this.form2.teacher
+            }
+
+            for (var step = 0; step < this.tableData.length; step++) {
+                console.log(this.tableData[step].teacher);
+                console.log(current_Teacher)
+                console.log(this.tableData[step].date)
+                console.log(current_Date)
+                if (this.dialogFormVisible2 == true && this.form2.index == step) {
+
+                    continue
+                }
+                if (this.tableData[step].course_code == current_CourseCode && this.tableData[step].date == current_Date) {
+                    callback(new Error('One course is scheduled at most once a day'))
+                    flag = false;
+                    break;
+                }
+                if (this.tableData[step].teacher == current_Teacher && this.tableData[step].date == current_Date) {
+                    callback(new Error('Each teacher can take no more than one lecture per day'))
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag == true) {
+                callback()
+            }
+        }
 
 
         return {
             dialogFormVisible: false,
-            tableData: [{
-                course_name: 'OOAD',
-                course_code: 'CS309',
-                language: 'English',
-                teacher: 'XXX',
-                date: '2022/09/30',
-                time: '19:00',
-                location: 'Activity Room',
-                duration: '3.0h',
-
-            }],
+            dialogFormVisible2: false,
+            tableData: [],
             form: {
                 course_name: '',
                 course_code: '',
@@ -175,24 +343,37 @@ export default {
                 time: '',
                 location: '',
                 duration: '',
+
             },
-            pickerOptions: {
-                disabledDate(v) {
-                    return v.getTime() < new Date().getTime() - 86400000;
-                }
+            form2: {
+                course_name: '',
+                course_code: '',
+                language: '',
+                teacher: '',
+                date: '',
+                time: '',
+                location: '',
+                duration: '',
+                index: -1,
             },
+
+            // pickerOptions: {
+            //     disabledDate(v) {
+            //         return v.getTime() < new Date().getTime() - 86400000;
+            //     }
+            // },
             options: [{
-                value: 'option1',
+                value: 'Teaching Building NO.1 Lecture Hall',
                 label: 'Teaching Building NO.1 Lecture Hall'
             }, {
-                value: 'option2',
+                value: 'Research Building Lecture Hall',
                 label: 'Research Building Lecture Hall'
             }, {
-                value: 'option3',
+                value: 'Library Conference Hall',
                 label: 'Library Conference Hall'
             },
             {
-                value: 'option4',
+                value: 'Activity Room',
                 label: 'Activity Room'
             }],
             rules: {
@@ -211,13 +392,13 @@ export default {
 
                 date: [
 
-                    { type: 'date', required: true, message: 'Please select the time of the course', trigger: 'change' }
+                    { validator: validateDate, trigger: 'change' }
                 ],
                 time: [
                     { type: 'date', required: true, message: 'Please select the time of the course', trigger: 'change' }
                 ],
                 location: [
-                    { required: true, message: 'Please enter location of the course', trigger: 'change' }
+                    {required: true,message: 'Please !!!', trigger: 'change' }
                 ],
                 duration: [
                     { validator: validateDuration, trigger: 'blur' }
@@ -227,28 +408,88 @@ export default {
     },
 
     methods: {
+        format_date(value) {
+            if (value) {
+                return moment(String(value)).format('YYYY/MM/DD')
+            }
+        },
+        format_time(value) {
+            if (value) {
+                return moment(String(value)).format('HH:MM')
+            }
+        }, 
+                
         addClass() {
             this.dialogFormVisible = true;
         },
-        editClass() {
-            this.dialogFormVisible = true;
+        handleEdit(index) {
+
+            this.form2.course_name = this.tableData[index].course_name
+            this.form2.course_code = this.tableData[index].course_code
+            this.form2.date = this.tableData[index].date
+            this.form2.duration = this.tableData[index].duration.substring(0, this.tableData[index].duration.length - 1)
+            this.form2.language = this.tableData[index].language
+            this.form2.location = this.tableData[index].location
+            this.form2.teacher = this.tableData[index].teacher
+            this.form2.time = this.tableData[index].time
+            this.form2.index = index
+
+            this.dialogFormVisible2 = true
+
         },
-        deleteClass() {
-            this.$alert("Sure to delete?")
+        deleteClass(index) {
+
+            this.tableData.splice(index, 1);
+
         },
-        submitForm(formName) {
+        async submitForm(formName) {
             this.$refs[formName].validate(async (valid) => {
                 if (valid) {
                     alert('submit!');
+                    this.form.duration = this.form.duration + 'h';
+                    this.form.date = this.format_date(this.form.date)
+                    this.form.time = this.format_time(this.form.time)
+                    this.tableData.push(
+                        JSON.parse(JSON.stringify(this.form))
+                    );
+
+                    console.log("hello world!");
+
                 } else {
                     console.log('error submit!!');
                     return false;
                 }
+                this.dialogFormVisible = false;
             });
         },
-        resetForm(formName) {
+        async editForm(formName) {
+            this.$refs[formName].validate(async (valid) => {
+                if (valid) {
+                    alert('edit!');
+                    this.form2.duration = this.form2.duration + 'h';
+                    this.form2.date = this.format_date(this.form2.date)
+                    this.form2.time = this.format_time(this.form2.time)
+                    this.tableData[this.form2.index] = JSON.parse(JSON.stringify(this.form2))
+
+                    console.log("hello world!");
+
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+                this.dialogFormVisible2 = false;
+            });
+        },
+
+        async resetForm(formName) {
             this.$refs[formName].resetFields();
+            this.dialogFormVisible = false;
+        },
+        async resetForm2(formName) {
+            this.$refs[formName].resetFields();
+            this.dialogFormVisible2 = false;
         }
+
 
     }
 
