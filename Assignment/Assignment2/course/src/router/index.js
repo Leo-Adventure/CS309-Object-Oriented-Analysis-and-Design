@@ -7,13 +7,13 @@ const routes = [
   {
     path: '/',
     redirect: '/layout',
-    component:()=>import("../views/Login.vue")
+    component: () => import("../views/Login.vue")
   },
   {
     path: '/layout',
-    component:()=>import("@/views/Main.vue")
+    component: () => import("@/views/Main.vue")
   },
-  
+
 ]
 
 const router = new VueRouter({
