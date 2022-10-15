@@ -77,6 +77,7 @@
       };
     },
     methods: {
+      
       submitForm(formName) {
         // console.log(formName);
         this.$refs[formName].validate(async (valid) => {

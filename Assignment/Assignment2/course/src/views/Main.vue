@@ -6,7 +6,7 @@
             <div class="table_a">
                 <el-table :data="tableData"
                     :header-cell-style="{color:'black',fontSize: '14px',fontFamily: 'nano',background:'lightgrey'}"
-                    border stripe fit style="width: 100%" empty-text="No Course opening">
+                    border stripe fit style="width: 100%" empty-text="No Course opening" :key="num">
 
                     <el-table-column prop="course_name" label="Course Name" width="180" align="center">
                     </el-table-column>
@@ -27,7 +27,8 @@
                     <el-table-column prop="operation" label="Operation" align="center">
                         <template #default="scope">
                             <div>
-                                <el-button type="primary" size="mini" plain round @click="handleEdit(scope.$index)">edit
+                                <el-button type="primary" size="mini" plain round @click="handleEdit(scope.$index)">
+                                    edit
                                 </el-button>
                             </div>
 
@@ -45,7 +46,7 @@
                     <el-button type="primary" @click="addClass">Add Class</el-button>
                 </div>
 
-                <el-dialog :visible.async="dialogFormVisible">
+                <el-dialog :visible.async="dialogFormVisible" :beforeClose="handleClose">
                     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                         <el-form-item>
                             <div class="form_header">
@@ -80,23 +81,23 @@
                         </el-form-item>
                         <el-form-item label="Time" prop="time">
                             <el-col :span="11">
-                                <el-time-picker placeholder="--:--" v-model="form.time" style="width: 100%;">
+                                <el-time-picker :editable="false" format="HH:mm" value-format="HH:mm"
+                                    placeholder="--:--" v-model="form.time" style="width: 100%;">
                                 </el-time-picker>
                             </el-col>
                         </el-form-item>
-
                         <el-form-item label="Location" prop="location">
-                            <el-col :span="20">
-                                <el-select v-model=form.location filterable
-                                    placeholder="Teaching Building NO.1 Lecture Hall">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label"
-                                        :value="item.value">
-                                    </el-option>
-                                </el-select>
-                            </el-col>
+                            <el-select v-model="form.location" placeholder="">
+                                <el-option label="Teaching Building NO.1 Lecture Hall"
+                                    value="Teaching Building NO.1 Lecture Hall"></el-option>
+                                <el-option label="Library Conference Hall" value="Library Conference Hall"></el-option>
+                                <el-option label="Research Building Lecture Hall"
+                                    value="Research Building Lecture Hall"></el-option>
+                                <el-option label="Activity Room" value="Activity Room"></el-option>
+                            </el-select>
                         </el-form-item>
 
-                        <el-form-item label="Duration(H)" prop="duration">
+                        <el-form-item label="Duration(h)" prop="duration">
                             <el-input v-model="form.duration"></el-input>
                         </el-form-item>
                         <el-form-item>
@@ -111,7 +112,7 @@
                 </el-dialog>
 
 
-                <el-dialog :visible.async="dialogFormVisible2">
+                <el-dialog :visible.async="dialogFormVisible2" :beforeClose="handleClose">
                     <el-form ref="form2" :model="form2" :rules="rules" label-width="100px">
                         <el-form-item>
                             <div class="form_header">
@@ -144,21 +145,23 @@
                         </el-form-item>
                         <el-form-item label="Time" prop="time">
                             <el-col :span="11">
-                                <el-time-picker placeholder="--:--" v-model="form2.time" style="width: 100%;">
+                                <el-time-picker placeholder="--:--" format="HH:mm" value-format="HH:mm"
+                                    v-model="form2.time" style="width: 100%;">
                                 </el-time-picker>
                             </el-col>
                         </el-form-item>
 
                         <el-form-item label="Location" prop="location">
-                            <el-col :span="20">
-                                <el-select v-model=form.location filterable
-                                    placeholder="Teaching Building NO.1 Lecture Hall">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label"
-                                        :value="item.value">
-                                    </el-option>
-                                </el-select>
-                            </el-col>
+                            <el-select v-model="form2.location" placeholder="Teaching Building NO.1 Lecture Hall">
+                                <el-option label="Teaching Building NO.1 Lecture Hall"
+                                    value="Teaching Building NO.1 Lecture Hall"></el-option>
+                                <el-option label="Library Conference Hall" value="Library Conference Hall"></el-option>
+                                <el-option label="Research Building Lecture Hall"
+                                    value="Research Building Lecture Hall"></el-option>
+                                <el-option label="Activity Room" value="Activity Room"></el-option>
+                            </el-select>
                         </el-form-item>
+
 
                         <el-form-item label="Duration(H)" prop="duration">
                             <el-input v-model="form2.duration"></el-input>
@@ -210,7 +213,22 @@ export default {
                 if (!isEN) {
                     callback(new Error('Course Name can only be English letters'));
                 } else {
-                    callback();
+                    var step = 0;
+                    var flag = false;
+                    for (; step < this.tableData.length; step++) {
+                        if (this.tableData[step].course_code == this.form.course_code && value != this.tableData[step].course_name) {
+
+                            flag = true;
+                            break;
+                        }
+                    }
+
+                    if (flag == true) {
+                        callback(new Error("Different courses should have different course codes"))
+                    } else {
+                        callback()
+                    }
+
                 }
             }
         };
@@ -240,46 +258,58 @@ export default {
                 }
             }
         };
-        // var validateLocation = (rule, value, callback) => {
-        //     if (!value) {
-        //         return callback(new Error('Please input non-blank value'))
-        //     }
-        //     setTimeout(() => {
-        //         var step = 0;
-        //         var flag = false;
-        //         for (; step < this.tableData.length; step++) {
-        //             if (this.dialogFormVisible2 == true && this.form2.index == step) {
-        //                 continue
-        //             }
-        //             if (this.tableData[step].location == value) {
-        //                 const start_time_1 = new Date(this.tableData[step].date + " " + this.tableData[step].time)
-        //                 const end_time_1 = new Date()
-        //                 end_time_1.setTime(start_time_1.getTime() + 3600 * 1000 * parseFloat(this.tableData[step].duration.substring(0, this.tableData[step].duration.length - 1)))
-        //                 var start_time_2;
-        //                 var end_time_2 = new Date();
-        //                 if (this.dialogFormVisible == true) {
-        //                     start_time_2 = new Date(this.form2.date + " " + this.form2.time)
-        //                     end_time_2.setTime(start_time_2.getTime() + 3600 * 1000 * parseFloat(this.form.duration))
-        //                 } else if (this.dialogFormVisible2 == true) {
-        //                     start_time_2 = new Date(this.form2.date + " " + this.form2.time)
-        //                     end_time_2.setTime(start_time_2.getTime() + 3600 * 1000 * parseFloat(this.form2.duration))
-        //                 }
-        //                 if (start_time_1 <= start_time_2 && start_time_2 <= end_time_1) {
-        //                     flag = true;
-        //                     break;
-        //                 } else if (start_time_1 >= start_time_2 && start_time_1 <= end_time_2) {
-        //                     flag = true;
-        //                     break;
-        //                 }
-        //             }
-        //         }
-        //         if (flag == true) {
-        //             callback(new Error("Any two different courses cannot share one room at the same time"))
-        //         } else {
-        //             callback()
-        //         }
-        //     }, 500)
-        // }
+        var validateLocation = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('Please input non-blank value'))
+            }
+
+            var step = 0;
+            var flag = false;
+            for (; step < this.tableData.length; step++) {
+
+                if (this.tableData[step].date != this.format_date(this.form.date)) {
+                    continue;
+                }
+                console.log(this.tableData[step].date)
+                console.log(this.format_date(this.form.date))
+
+                if (this.tableData[step].location == value) {
+                    console.log("This date = ", this.format_date(this.tableData[step].date))
+                    console.log("this.tableData[step].time = ", this.tableData[step].time)
+                    const start_time_1 = new Date(this.tableData[step].date + " " + this.tableData[step].time)
+                    const end_time_1 = new Date()
+                    end_time_1.setTime(start_time_1.getTime() + 3600 * 1000 * parseFloat(this.tableData[step].duration.substring(0, this.tableData[step].duration.length - 1)))
+                    var start_time_2;
+                    var end_time_2 = new Date();
+                    if (this.dialogFormVisible == true) {
+                        start_time_2 = new Date(this.format_date(this.form.date) + " " + this.form.time)
+                        end_time_2.setTime(start_time_2.getTime() + 3600 * 1000 * parseFloat(this.form.duration))
+                    } else if (this.dialogFormVisible2 == true) {
+                        start_time_2 = new Date(this.format_date(this.form2.date) + " " + this.form2.time)
+                        end_time_2.setTime(start_time_2.getTime() + 3600 * 1000 * parseFloat(this.form2.duration))
+                    }
+                    console.log(start_time_1)
+                    console.log(end_time_1)
+                    console.log("----------")
+                    console.log(start_time_2)
+                    console.log(end_time_2)
+                    
+                    if (start_time_1 <= start_time_2 && start_time_2 <= end_time_1) {
+                        flag = true;
+                        break;
+                    } else if (start_time_1 >= start_time_2 && start_time_1 <= end_time_2) {
+                        flag = true;
+                        break;
+                    }
+                    
+                }
+            }
+            if (flag == true) {
+                callback(new Error("Any two different courses cannot share one room at the same time"))
+            } else {
+                callback()
+            }
+        }
         var validateDate = (rule, value, callback) => {
             if (!value) {
                 return callback(new Error('Please input non-blank date'))
@@ -305,12 +335,8 @@ export default {
             }
 
             for (var step = 0; step < this.tableData.length; step++) {
-                console.log(this.tableData[step].teacher);
-                console.log(current_Teacher)
-                console.log(this.tableData[step].date)
-                console.log(current_Date)
-                if (this.dialogFormVisible2 == true && this.form2.index == step) {
 
+                if (this.dialogFormVisible2 == true && this.form2.index == step) {
                     continue
                 }
                 if (this.tableData[step].course_code == current_CourseCode && this.tableData[step].date == current_Date) {
@@ -330,7 +356,10 @@ export default {
         }
 
 
+
+
         return {
+            num: '',
             dialogFormVisible: false,
             dialogFormVisible2: false,
             tableData: [],
@@ -357,11 +386,7 @@ export default {
                 index: -1,
             },
 
-            // pickerOptions: {
-            //     disabledDate(v) {
-            //         return v.getTime() < new Date().getTime() - 86400000;
-            //     }
-            // },
+
             options: [{
                 value: 'Teaching Building NO.1 Lecture Hall',
                 label: 'Teaching Building NO.1 Lecture Hall'
@@ -395,10 +420,10 @@ export default {
                     { validator: validateDate, trigger: 'change' }
                 ],
                 time: [
-                    { type: 'date', required: true, message: 'Please select the time of the course', trigger: 'change' }
+                    { required: true, message: 'Please select the time of the course', trigger: 'change' }
                 ],
                 location: [
-                    {required: true,message: 'Please !!!', trigger: 'change' }
+                    { validator: validateLocation, trigger: 'change' }
                 ],
                 duration: [
                     { validator: validateDuration, trigger: 'blur' }
@@ -408,6 +433,17 @@ export default {
     },
 
     methods: {
+        dataRefreh() {
+            // 计时器正在进行中，退出函数
+            if (this.intervalId != null) {
+                return;
+            }
+            // 计时器为空，操作
+            this.intervalId = setInterval(() => {
+                console.log("刷新" + new Date());
+                this.initData(); //加载数据函数
+            }, 5000);
+        },
         format_date(value) {
             if (value) {
                 return moment(String(value)).format('YYYY/MM/DD')
@@ -417,8 +453,18 @@ export default {
             if (value) {
                 return moment(String(value)).format('HH:MM')
             }
-        }, 
-                
+        },
+        handleClose() {
+            if (this.dialogFormVisible == true) {
+                // this.$refs['form'].resetFields();
+                this.dialogFormVisible = false;
+
+            } else {
+                // this.$refs['form2'].resetFields();
+                this.dialogFormVisible2 = false;
+            }
+        },
+
         addClass() {
             this.dialogFormVisible = true;
         },
@@ -442,13 +488,12 @@ export default {
             this.tableData.splice(index, 1);
 
         },
-        async submitForm(formName) {
+        submitForm(formName) {
             this.$refs[formName].validate(async (valid) => {
                 if (valid) {
-                    alert('submit!');
+                    // alert('submit!');
                     this.form.duration = this.form.duration + 'h';
                     this.form.date = this.format_date(this.form.date)
-                    this.form.time = this.format_time(this.form.time)
                     this.tableData.push(
                         JSON.parse(JSON.stringify(this.form))
                     );
@@ -459,24 +504,26 @@ export default {
                     console.log('error submit!!');
                     return false;
                 }
+                this.$refs[formName].resetFields();
                 this.dialogFormVisible = false;
             });
         },
-        async editForm(formName) {
+        editForm(formName) {
             this.$refs[formName].validate(async (valid) => {
                 if (valid) {
-                    alert('edit!');
+                    // alert('edit!');
                     this.form2.duration = this.form2.duration + 'h';
                     this.form2.date = this.format_date(this.form2.date)
-                    this.form2.time = this.format_time(this.form2.time)
                     this.tableData[this.form2.index] = JSON.parse(JSON.stringify(this.form2))
-
+                    console.log(this.tableData[this.form2.index])
+                    this.num = Math.random();
                     console.log("hello world!");
 
                 } else {
                     console.log('error submit!!');
                     return false;
                 }
+                this.$refs[formName].resetFields();
                 this.dialogFormVisible2 = false;
             });
         },
@@ -491,7 +538,15 @@ export default {
         }
 
 
-    }
+
+    },
+    watch: {
+        $route(from) {
+            window.location.reload(); //监测到路由发生跳转时刷新一次页面
+            this.dataRefreh();
+
+        },
+    },
 
 }
 </script>
