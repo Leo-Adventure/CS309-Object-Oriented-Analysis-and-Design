@@ -48,7 +48,5 @@ public class WhiteBallRandom extends Ball implements Subject<Ball>{
         }
     }
     @Override
-    public void changeIntersect(Ball another){
-
-    }
+    public void changeIntersect(Ball another){}
 }
