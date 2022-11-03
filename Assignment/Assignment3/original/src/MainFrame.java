@@ -34,15 +34,15 @@ public class MainFrame extends JFrame {
         stop.setEnabled(false);
         restart.setEnabled(false);
 
-        mainPanel.setWhiteBall(new Ball(Color.WHITE, 0, 0, 200));
-        mainPanel.setWhiteBallRandom(new Ball(Color.WHITE, (int) (Math.random() * 3) + 4,
+        mainPanel.setWhiteBall(new WhiteBall(0, 0, 200));
+        mainPanel.setWhiteBallRandom(new WhiteBall((int) (Math.random() * 3) + 4,
                 (int) (Math.random() * 3) + 4, 300));
         Ball.setCount(0);
 
 
         red.addActionListener(l -> {
             if (Ball.getCount() < Ball.TOTAL_NUM) {
-                mainPanel.addBallToPanel(new Ball(Color.RED, 3, 2, 60));
+                mainPanel.addBallToPanel(new RedBall(3, 2, 60));
                 mainPanel.scoreIncrement(-10);
                 redCount++;
                 buttonPanel.getRedCountLabel().setText("RED: " + redCount);
@@ -51,7 +51,7 @@ public class MainFrame extends JFrame {
 
         blue.addActionListener(l -> {
             if (Ball.getCount() < Ball.TOTAL_NUM) {
-                mainPanel.addBallToPanel(new Ball(Color.BLUE, 6, 4, 60));
+                mainPanel.addBallToPanel(new BlueBall(6, 4, 60));
                 mainPanel.scoreIncrement(+30);
                 blueCount++;
                 buttonPanel.getBlueCountLabel().setText("BlUE: " + blueCount);

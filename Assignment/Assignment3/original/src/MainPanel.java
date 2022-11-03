@@ -6,15 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+// Subject
 public class MainPanel extends JPanel implements KeyListener {
-    private List<Ball> paintingBallList = new ArrayList<>();//后续会添加红球，蓝球
+    private List<Ball> paintingBallList = new ArrayList<>();
 
     enum GameStatus {PREPARING, START, STOP}
 
     protected static GameStatus gameStatus;
     private int score;
-    private Ball whiteBall;
-    private Ball whiteBallRandom;
+    private WhiteBall whiteBall;
+    private WhiteBall whiteBallRandom;
+
+    private BlueBall blueBall;
+    private RedBall redBall;
     Random random = new Random();
     Timer t;
 
@@ -74,13 +78,13 @@ public class MainPanel extends JPanel implements KeyListener {
         repaint();
     }
 
-    public void setWhiteBall(Ball whiteBall) {
+    public void setWhiteBall(WhiteBall whiteBall) {
         this.whiteBall = whiteBall;
         this.whiteBall.setVisible(false);
         add(whiteBall);
     }
 
-    public void setWhiteBallRandom(Ball whiteBallRandom) {
+    public void setWhiteBallRandom(WhiteBall whiteBallRandom) {
         this.whiteBallRandom = whiteBallRandom;
         this.whiteBallRandom.setVisible(false);
         add(whiteBallRandom);
@@ -138,41 +142,11 @@ public class MainPanel extends JPanel implements KeyListener {
         System.out.println("Press: " + keyChar);
 
         for (Ball ball : paintingBallList) {
-            if (ball.getColor() == Color.RED) {
-                switch (keyChar) {
-                    case 'a':
-                        ball.setXSpeed(-random.nextInt(3) - 1);
-                        break;
-                    case 'd':
-                        ball.setXSpeed(random.nextInt(3) + 1);
-                        break;
-                    case 'w':
-                        ball.setYSpeed(-random.nextInt(3) - 1);
-                        break;
-                    case 's':
-                        ball.setYSpeed(random.nextInt(3) + 1);
-                }
-            } else if (ball.getColor() == Color.BLUE) {
-                ball.setXSpeed(-1 * ball.getXSpeed());
-                ball.setYSpeed(-1 * ball.getYSpeed());
-            }
+            ball.update(keyChar);
         }
 
         if (gameStatus == GameStatus.START) {
-            switch (keyChar) {
-                case 'a':
-                    whiteBall.setXSpeed(-8);
-                    break;
-                case 'd':
-                    whiteBall.setXSpeed(8);
-                    break;
-                case 'w':
-                    whiteBall.setYSpeed(-8);
-                    break;
-                case 's':
-                    whiteBall.setYSpeed(8);
-                    break;
-            }
+            whiteBall.update(keyChar);
         }
     }
 
