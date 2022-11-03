@@ -11,7 +11,7 @@ public class RedBall extends Ball{
         this.ySpeed = ySpeed;
         this.ballSize = ballSize;
 
-        this.visible = false;
+        this.visible = true;
         this.x = (int) (Math.random() * 580);
         this.y = (int) (Math.random() * 580);
         count++;

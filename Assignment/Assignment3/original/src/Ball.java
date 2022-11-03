@@ -86,7 +86,7 @@ public abstract class Ball extends JComponent {
 
     }
 
-    public void move() {
+    public final void move() {
         int newX = this.getX() + this.getXSpeed();
         int newY = this.getY() + this.getYSpeed();
 

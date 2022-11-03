@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WhiteBallRandom extends Ball implements Subject<Ball>{
-    private final List<Ball> observerList = new ArrayList<>();
+    private List<Ball> observerList = new ArrayList<>();
     public WhiteBallRandom(int xSpeed, int ySpeed, int ballSize) {
         this.color = Color.WHITE;
         this.xSpeed = xSpeed;
@@ -38,9 +38,7 @@ public class WhiteBallRandom extends Ball implements Subject<Ball>{
     }
 
     public void clearAll(){
-        for(Ball ball: observerList){
-            this.removeObserver(ball);
-        }
+        observerList = new ArrayList<>();
     }
 
     @Override

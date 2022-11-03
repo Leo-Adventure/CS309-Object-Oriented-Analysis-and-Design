@@ -53,6 +53,9 @@ public class MainPanel extends JPanel implements KeyListener, Subject<Ball>{
     public void startGame() {
         gameStatus = GameStatus.START;
         this.whiteBall.setVisible(true);
+        for(Ball b: paintingBallList){
+            b.setVisible(false);
+        }
         this.whiteBallRandom.setVisible(true);
     }
 
@@ -104,6 +107,9 @@ public class MainPanel extends JPanel implements KeyListener, Subject<Ball>{
         this.whiteBall = whiteBall;
         this.whiteBall.setVisible(false);
         add(whiteBall);
+        observerList.add(whiteBall);
+//        whiteBallRandom.registerObserver(whiteBall);
+
     }
 
     public void setWhiteBallRandom(WhiteBallRandom whiteBallRandom) {
@@ -150,7 +156,7 @@ public class MainPanel extends JPanel implements KeyListener, Subject<Ball>{
 
     public void addBallToPanel(Ball ball) {
         paintingBallList.add(ball);
-        observerList.add(ball);
+        registerObserver(ball);
         whiteBallRandom.registerObserver(ball);
         this.add(ball);
     }
