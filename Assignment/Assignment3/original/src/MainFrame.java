@@ -35,7 +35,7 @@ public class MainFrame extends JFrame {
         restart.setEnabled(false);
 
         mainPanel.setWhiteBall(new WhiteBall(0, 0, 200));
-        mainPanel.setWhiteBallRandom(new WhiteBall((int) (Math.random() * 3) + 4,
+        mainPanel.setWhiteBallRandom(new WhiteBallRandom((int) (Math.random() * 3) + 4,
                 (int) (Math.random() * 3) + 4, 300));
         Ball.setCount(0);
 

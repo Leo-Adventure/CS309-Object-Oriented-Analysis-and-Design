@@ -16,20 +16,18 @@ public class WhiteBall extends Ball{
     }
 
     @Override
-    public void update(char ch){
-        switch (ch) {
-            case 'a':
-                this.setXSpeed(-8);
-                break;
-            case 'd':
-                this.setXSpeed(8);
-                break;
-            case 'w':
-                this.setYSpeed(-8);
-                break;
-            case 's':
-                this.setYSpeed(8);
-                break;
+    public void update(char ch, MainPanel.GameStatus gameStatus){
+        if(gameStatus == MainPanel.GameStatus.START){
+            switch (ch) {
+                case 'a' -> this.setXSpeed(-8);
+                case 'd' -> this.setXSpeed(8);
+                case 'w' -> this.setYSpeed(-8);
+                case 's' -> this.setYSpeed(8);
+            }
         }
+    }
+    @Override
+    public void changeIntersect(Ball another){
+
     }
 }

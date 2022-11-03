@@ -7,7 +7,7 @@ public class BlueBall extends Ball{
         this.ySpeed = ySpeed;
         this.ballSize = ballSize;
 
-        this.visible = true;
+        this.visible = false;
         this.x = (int) (Math.random() * 580);
         this.y = (int) (Math.random() * 580);
         count++;
@@ -16,9 +16,13 @@ public class BlueBall extends Ball{
     }
 
     @Override
-    public void update(char ch){
+    public void update(char ch, MainPanel.GameStatus gameStatus){
         this.setXSpeed(-1 * this.getXSpeed());
         this.setYSpeed(-1 * this.getYSpeed());
+    }
+    @Override
+    public void changeIntersect(Ball another){
+        this.setVisible(this.isIntersect(another));
     }
 
 

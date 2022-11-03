@@ -10,7 +10,7 @@ public abstract class Ball extends JComponent {
     public static final int TOTAL_NUM = 15;
     protected static int count = 0;
 
-    public abstract void update(char ch);
+    public abstract void update(char ch, MainPanel.GameStatus gameStatus);
 
     public static int getCount() {
         return count;
@@ -19,7 +19,6 @@ public abstract class Ball extends JComponent {
     public static void setCount(int count) {
         Ball.count = count;
     }
-
 
     public Color getColor() {
         return this.color;
@@ -121,6 +120,14 @@ public abstract class Ball extends JComponent {
         super.paintComponent(g);
         draw(g);
     }
+    public boolean isIntersect(Ball another) {
+        int dis = (this.getWidth() + another.getWidth()) / 2;
+        double diffXPow = Math.pow(this.convertToCentralX() - another.convertToCentralX(), 2);
+        double diffYPow = Math.pow(this.convertToCentralY() - another.convertToCentralY(), 2);
+        return diffXPow + diffYPow < dis * dis;
+    }
+
+    public abstract void changeIntersect(Ball another);
 
 
 }
