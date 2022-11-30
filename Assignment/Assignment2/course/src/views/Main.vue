@@ -361,10 +361,8 @@ export default {
             if (flag == true) {
                 callback()
             }
+            
         }
-
-
-
 
         return {
             num: '',
