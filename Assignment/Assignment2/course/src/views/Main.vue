@@ -773,6 +773,8 @@ form {
     text-align: center;
     background-color: transparent;
     }
+
+    
 .el-select>.el-input {
     display: block;
     padding-right: 80px;
