@@ -1,7 +1,7 @@
 package AdapterPattern;
 
 public class MediaAdapter implements MediaPlayer {
-    AdvancedMediaPlayer advancedMediaPlayer;
+    AdvancedMediaPlayer advancedMediaPlayer;// Adaptee Class
 
     public MediaAdapter(String autoType) {
         if (autoType.equalsIgnoreCase("vlc")) {
