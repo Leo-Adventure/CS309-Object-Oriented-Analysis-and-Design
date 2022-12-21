@@ -1,4 +1,4 @@
-package FactoryPattern;
+package FactoryMethodPattern;
 
 public class IPhone implements Phone{
     public IPhone() {
