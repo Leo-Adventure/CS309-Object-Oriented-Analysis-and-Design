@@ -1,4 +1,4 @@
-package CommandPattern;
+package CommandPattern.Stock;
 
 public class BuyOrder extends Order{
     public Stock stock;

@@ -1,4 +1,4 @@
-package CommandPattern;
+package CommandPattern.Stock;
 
 public class Client {
     public static void main(String[] args) {

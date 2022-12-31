@@ -1,4 +1,4 @@
-package CommandPattern;
+package CommandPattern.Stock;
 
 import java.util.ArrayList;
 

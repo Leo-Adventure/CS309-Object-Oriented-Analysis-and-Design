@@ -1,4 +1,4 @@
-package CommandPattern;
+package CommandPattern.Stock;
 
 public class Stock {
     public void buy(){

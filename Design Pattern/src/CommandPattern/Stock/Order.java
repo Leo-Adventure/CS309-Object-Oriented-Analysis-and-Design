@@ -1,4 +1,4 @@
-package CommandPattern;
+package CommandPattern.Stock;
 
 // command abstract class
 public abstract class Order {
