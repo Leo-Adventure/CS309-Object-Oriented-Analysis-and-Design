@@ -8,7 +8,7 @@
 
 ## UML 
 
-![Screen Shot 2023-01-01 at 23.40.26.png](https://s2.loli.net/2023/01/01/bEnCqWxc84lZ2ts.png)
+![UML.png](https://s2.loli.net/2023/01/02/5YZR6GEnudgACeI.png)
 
 ## 设计模式(Design Pattern)
 
